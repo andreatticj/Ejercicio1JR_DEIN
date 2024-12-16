@@ -2,13 +2,6 @@ package eu.andreatt.ejercicio1jr_dein.application;
 
 import eu.andreatt.ejercicio1jr_dein.bbdd.ConexionBD;
 import javafx.scene.control.Alert;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.view.JasperViewer;
-
-
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -23,7 +16,7 @@ public class Ejercicio1 {
             //podemos crear un conjunto de parámetros si quisieramos pasárselo al informe
             HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-            InputStream reportStream = getClass().getResourceAsStream("/eu/andreatt/ejercicio1jr_dein/jasper/ejercicio1.jasper");
+            InputStream reportStream = con.getClass().getResourceAsStream("/eu/andreatt/ejercicio1jr_dein/jasper/ejercicio1.jasper");
             if (reportStream == null) {
                 System.out.println("El archivo no esta ahí");
             }else {
@@ -32,7 +25,6 @@ public class Ejercicio1 {
             JasperReport report = (JasperReport) JRLoader.loadObject(reportStream);
 
             //Atentos a la ruta del Jasper y a cómo enlazamos el archivo compilado por JasperReports
-            // JasperReport report = (JasperReport) JRLoader.loadObject(new File("src/main/resources/es/israeldelamo/jasperconmaven/reports/Cherry.jasper"));
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, con.getConexion());
             //Preparamos un visor, no intentaremos usar el salvar a PDF; para eso el SO ya nos da las impresoras A PDF
             JasperViewer viewer = new JasperViewer(jprint, false);
@@ -48,8 +40,5 @@ public class Ejercicio1 {
             alert.showAndWait();
             //e.printStackTrace();
         }
-
     }
-
-
 }
