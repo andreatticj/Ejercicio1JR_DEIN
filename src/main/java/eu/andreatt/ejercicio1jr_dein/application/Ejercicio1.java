@@ -1,44 +1,61 @@
 package eu.andreatt.ejercicio1jr_dein.application;
 
 import eu.andreatt.ejercicio1jr_dein.bbdd.ConexionBD;
+import javafx.application.Application;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
+
 import java.io.InputStream;
 import java.util.HashMap;
 
-public class Ejercicio1 {
+public class Ejercicio1 extends Application {
 
     public static void main(String[] args) {
+        launch(args); // Launch the JavaFX application
+    }
 
-        // comenzamos con el lanzamiento del informe
+    @Override
+    public void start(Stage primaryStage) {
         try {
-            // abrimos la base de datos
+            // Open the database connection
             ConexionBD con = new ConexionBD();
-            //podemos crear un conjunto de parámetros si quisieramos pasárselo al informe
-            HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-            InputStream reportStream = con.getClass().getResourceAsStream("/eu/andreatt/ejercicio1jr_dein/jasper/ejercicio1.jasper");
+            // Parameters for the report
+            HashMap<String, Object> parameters = new HashMap<>();
+
+            // Load the report file
+            InputStream reportStream = getClass().getResourceAsStream("/eu/andreatt/ejercicio1jr_dein/informes/ejercicio1.jasper");
             if (reportStream == null) {
-                System.out.println("El archivo no esta ahí");
-            }else {
-                System.out.println("El archivo se ha encontrado");
+                throw new RuntimeException("El archivo .jasper no se encuentra en la ruta especificada.");
             }
+
+            // Load and compile the Jasper report
             JasperReport report = (JasperReport) JRLoader.loadObject(reportStream);
 
-            //Atentos a la ruta del Jasper y a cómo enlazamos el archivo compilado por JasperReports
+            // Fill the report with data
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, con.getConexion());
-            //Preparamos un visor, no intentaremos usar el salvar a PDF; para eso el SO ya nos da las impresoras A PDF
+
+            // Show the report viewer
             JasperViewer viewer = new JasperViewer(jprint, false);
-            //lanzamos la visión
             viewer.setVisible(true);
         } catch (Exception e) {
-            //como estamos en JavaFX tratamos la alerta aquí y comentamos el stack de consola.
-            // en desarrollo sería conveniente tenerlo descomentado
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setTitle("ERROR");
-            alert.setContentText("Ha ocurrido un error al abrir el informe. Pida ayuda en el foro");
-            alert.showAndWait();
-            //e.printStackTrace();
+            e.printStackTrace(); // Print the exception for debugging
+            showErrorDialog("Error: " + e.getMessage());
         }
+    }
+
+
+    private void showErrorDialog(String message) {
+        // Show an error dialog on the JavaFX Application Thread
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setTitle("ERROR");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

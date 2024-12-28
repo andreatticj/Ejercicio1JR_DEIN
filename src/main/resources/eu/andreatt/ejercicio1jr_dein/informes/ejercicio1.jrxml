@@ -48,7 +48,7 @@
 		<band height="146" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="164" height="126" uuid="1c003177-754c-448f-8ce1-16868856f545"/>
-				<imageExpression><![CDATA["naciones.png"]]></imageExpression>
+				<imageExpression><![CDATA["/imagenes/naciones.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="270" y="0" width="310" height="62" uuid="bc1ce1da-8232-46ea-be55-cec4abb986dd"/>
@@ -73,7 +73,7 @@
 			</staticText>
 			<image>
 				<reportElement x="660" y="0" width="202" height="136" uuid="4aa6f4d1-27dc-4b34-9227-59e19ce2c959"/>
-				<imageExpression><![CDATA["coffee_stain.png"]]></imageExpression>
+				<imageExpression><![CDATA["/imagenes/coffee_stain.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

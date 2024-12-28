@@ -16,7 +16,7 @@ public class Propiedades {
 
     static {
         // Carga el archivo de propiedades desde el classpath
-        try (InputStream input = Propiedades.class.getResourceAsStream("/eu/andreatt/ejercicios_dein/configuration.properties")) {
+        try (InputStream input = Propiedades.class.getResourceAsStream("/configuration.properties")) {
             if (input == null) {
                 throw new RuntimeException("No se encontró el archivo configuration.properties en el classpath.");
             }
