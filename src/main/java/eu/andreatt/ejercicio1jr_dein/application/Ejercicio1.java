@@ -16,58 +16,79 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Clase principal de la aplicación que extiende {@link javafx.application.Application}.
+ * Esta clase genera un reporte utilizando JasperReports y se conecta a una base de datos para rellenar los datos.
+ */
 public class Ejercicio1 extends Application {
 
+    /**
+     * Función principal de la aplicación.
+     *
+     * @param args Argumentos de la línea de comandos.
+     */
     public static void main(String[] args) {
-        launch(args); // Launch the JavaFX application
+        launch(args); // Lanza la aplicación JavaFX
     }
 
+    /**
+     * Función sobrescrita de la clase {@link javafx.application.Application}.
+     * Inicializa la conexión a la base de datos y genera el reporte Jasper.
+     *
+     * @param primaryStage Escenario principal de la aplicación JavaFX.
+     */
     @Override
     public void start(Stage primaryStage) {
         ConexionBD db;
         try {
+            // Crear una instancia de conexión a la base de datos
             db = new ConexionBD();
 
-            // Cargar el reporte desde la ruta
+            // Cargar el reporte desde un archivo .jasper en el paquete especificado
             InputStream reportStream = getClass().getResourceAsStream("/eu/andreatt/ejercicio1jr_dein/informes/ejercicio1.jasper");
 
-            // Verifica si el archivo .jasper está presente
+            // Verificar si el archivo .jasper está presente
             if (reportStream == null) {
                 throw new RuntimeException("El archivo .jasper no se encuentra en la ruta especificada.");
             }
 
-            // Cargar el reporte de Jasper
+            // Cargar el archivo del reporte Jasper
             JasperReport report = (JasperReport) JRLoader.loadObject(reportStream);
 
-            // Parámetros del reporte
+            // Parámetros que se pasarán al reporte Jasper
             Map<String, Object> parameters = new HashMap<>();
             String imageBasePath = getClass().getResource("/eu/andreatt/ejercicio1jr_dein/imagenes/").toString();
             parameters.put("REPORT_IMAGE", imageBasePath);
 
-            // Mostrar la ruta de la imagen en la consola para depuración
+            // Mostrar la ruta base de la imagen en la consola para depuración
             System.out.println("Ruta base de la imagen: " + imageBasePath);
 
-            // Llenar el reporte con los datos de la base de datos
+            // Llenar el reporte con los datos obtenidos de la conexión a la base de datos
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, db.getConexion());
 
-            // Mostrar el reporte en una vista de Jasper
+            // Mostrar el reporte en una ventana utilizando JasperViewer
             JasperViewer viewer = new JasperViewer(jprint, false);
             viewer.setVisible(true);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Manejar errores relacionados con la conexión a la base de datos
             showErrorDialog("Error de conexión con la base de datos: " + e.getMessage());
         } catch (JRException e) {
-            e.printStackTrace();
+            // Manejar errores relacionados con JasperReports
             showErrorDialog("Error al generar el reporte Jasper: " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            // Manejar cualquier otro tipo de error
             showErrorDialog("Error inesperado: " + e.getMessage());
         }
     }
 
+    /**
+     * Muestra un cuadro de diálogo de error con un mensaje especificado.
+     *
+     * @param message El mensaje de error a mostrar en el cuadro de diálogo.
+     */
     private void showErrorDialog(String message) {
-        // Mostrar un diálogo de error en el hilo de la aplicación JavaFX
+        // Crear y mostrar un cuadro de diálogo de error en el hilo de la aplicación JavaFX
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(null);
         alert.setTitle("ERROR");
